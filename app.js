@@ -948,15 +948,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // --- XSS SANITIZER: Clean malicious code before rendering ---
-      const parser = new DOMParser();
-      const safeDoc = parser.parseFromString(edit.suggested_text, 'text/html');
+      // --- LIGHTWEIGHT XSS SANITIZER (Non-Destructive) ---
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = edit.suggested_text;
       
-      // 1. Destroy any injected script tags
-      const scripts = safeDoc.querySelectorAll('script');
+      const scripts = tempDiv.querySelectorAll('script');
       scripts.forEach(s => s.remove());
       
-      // 2. Destroy any invisible triggers (like onclick or onerror)
-      const allNodes = safeDoc.body.querySelectorAll('*');
+      const allNodes = tempDiv.querySelectorAll('*');
       allNodes.forEach(node => {
           for (let attr of [...node.attributes]) {
               if (attr.name.startsWith('on')) {
@@ -965,9 +964,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
       });
       
-      // 3. Render the scrubbed, perfectly safe HTML
-      adminViewNew.innerHTML = safeDoc.body.innerHTML; 
-      adminViewNew.style.whiteSpace = "pre-wrap";      
+      // Render exactly as the original code did
+      adminViewNew.innerHTML = tempDiv.innerHTML; 
+      adminViewNew.style.whiteSpace = "normal"; 
       adminViewNew.style.fontFamily = "'Playfair Display', serif";
       adminViewNew.style.fontSize = "1.1rem";
       adminViewNew.style.lineHeight = "1.7";
