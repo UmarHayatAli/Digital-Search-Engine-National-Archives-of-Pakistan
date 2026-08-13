@@ -967,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 3. Render the scrubbed, perfectly safe HTML
       adminViewNew.innerHTML = safeDoc.body.innerHTML; 
-      adminViewNew.style.whiteSpace = "normal"; 
+      adminViewNew.style.whiteSpace = "pre-wrap";      
       adminViewNew.style.fontFamily = "'Playfair Display', serif";
       adminViewNew.style.fontSize = "1.1rem";
       adminViewNew.style.lineHeight = "1.7";
