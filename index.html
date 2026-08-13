@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Archives of Pakistan — Digital Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="tb-brand">
+    <svg class="tb-crest" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="17" cy="17" r="16" stroke="rgba(200,168,75,0.38)" stroke-width="0.8"/>
+      <circle cx="17" cy="17" r="11.5" stroke="rgba(200,168,75,0.18)" stroke-width="0.6"/>
+      <circle cx="17" cy="17" r="3" fill="rgba(200,168,75,0.5)"/>
+      <line x1="17" y1="1" x2="17" y2="5.5" stroke="rgba(200,168,75,0.55)" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="17" y1="28.5" x2="17" y2="33" stroke="rgba(200,168,75,0.55)" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="1" y1="17" x2="5.5" y2="17" stroke="rgba(200,168,75,0.55)" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="28.5" y1="17" x2="33" y2="17" stroke="rgba(200,168,75,0.55)" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="5.5" y1="5.5" x2="8.3" y2="8.3" stroke="rgba(200,168,75,0.22)" stroke-width="0.7" stroke-linecap="round"/>
+      <line x1="25.7" y1="25.7" x2="28.5" y2="28.5" stroke="rgba(200,168,75,0.22)" stroke-width="0.7" stroke-linecap="round"/>
+      <line x1="28.5" y1="5.5" x2="25.7" y2="8.3" stroke="rgba(200,168,75,0.22)" stroke-width="0.7" stroke-linecap="round"/>
+      <line x1="8.3" y1="25.7" x2="5.5" y2="28.5" stroke="rgba(200,168,75,0.22)" stroke-width="0.7" stroke-linecap="round"/>
+    </svg>
+    <div class="tb-names">
+      <div class="tb-name-main">National Archives</div>
+      <div class="tb-name-sub">Digital Repository · Pakistan</div>
+    </div>
+  </div>
+  <div class="tb-vline"></div>
+  <nav class="tb-nav">
+    <div class="tb-navbtn active">Archive Search</div>
+    <div class="tb-navbtn" id="openAdminBtn">Admin Portal</div>
+    <div class="tb-navbtn gold-btn" id="openAboutBtn">About</div>
+  </nav>
+  <div class="tb-right">
+    <div class="tb-live">
+      <div class="tb-live-dot"></div>
+      <div class="tb-live-txt">Live Database</div>
+    </div>
+    <div class="tb-badge">Beta</div>
+  </div>
+</header>
+<div class="app">
+  <div class="panel-left">
+    <div class="pl-header">
+      <div class="pl-tag">
+        <div class="pl-tag-line"></div>
+        <div class="pl-tag-text">Source Document</div>
+      </div>
+      <div class="pl-page-lbl" id="plStatus"></div>
+    </div>
+    <div class="pl-viewer">
+      <div class="pl-idle" id="plIdle">
+        <div class="idle-seal">
+          <div class="sr sr1"></div>
+          <div class="sr sr2"></div>
+          <div class="sr sr3"></div>
+          <div class="sr sr4"></div>
+          <div class="st st-n"></div>
+          <div class="st st-s"></div>
+          <div class="st st-e"></div>
+          <div class="st st-w"></div>
+          <div class="sc"></div>
+        </div>
+        <div class="idle-words">
+          <div class="idle-qmark">"</div>
+          <div class="idle-quote">The preservation of history is the preservation of identity.</div>
+          <div class="idle-attr">— National Archives of Pakistan</div>
+        </div>
+      </div>
+      <div id="leftImageContainer">
+        <img id="leftImage" src="" alt="Source page">
+        <div class="lv-overlay">
+          <div class="lv-cta">
+            <svg class="lv-cta-icon" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="1" y="1" width="11" height="11" rx="1.5"/>
+              <path d="M4.5 6.5h4M6.5 4.5v4"/>
+            </svg>
+            <span class="lv-cta-txt">Open Full Reader</span>
+          </div>
+        </div>
+        <div class="lbk tl"></div><div class="lbk tr"></div>
+        <div class="lbk bl"></div><div class="lbk br"></div>
+        <div id="highlightOverlay"></div>
+      </div>
+    </div>
+    <div class="pl-footer">
+      <div class="pf-orn"><span class="od"></span><span class="ol"></span><span class="od"></span></div>
+      <div class="pf-txt">Scanned archival manuscript · Read-only facsimile</div>
+    </div>
+  </div>
+  <div class="panel-right">
+    <div class="pr-header">
+      <div class="pr-deco">
+        <div class="pr-deco-line"></div>
+        <div class="pr-deco-gem"></div>
+        <div class="pr-deco-text">Archive Full-Text Search</div>
+        <div class="pr-deco-gem"></div>
+        <div class="pr-deco-line r"></div>
+      </div>
+      <div class="search-wrap">
+        <div class="si-shell">
+          <div class="si-ico">
+            <svg viewBox="0 0 15 15" fill="none" stroke="currentColor">
+              <circle cx="6.5" cy="6.5" r="5.2"/><path d="M10.5 10.5L14 14" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <input type="text" id="searchInput" placeholder="e.g. colonial administration, 1857 uprising, Lahore…" dir="auto">
+        </div>
+        <button id="searchBtn">
+          <span class="sbtn-inner">
+            <svg class="sbtn-arrow" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1.5 5.5h8M5.5 1.5l4 4-4 4"/>
+            </svg>
+            Search
+          </span>
+        </button>
+      </div>
+      <div class="status-row">
+        <div id="loadingMsg"><div class="spn"></div>Searching archives…</div>
+        <div id="emptyState">Enter a keyword to search across the full collection.</div>
+        <div id="resultCounter"></div>
+        <div class="nav-row">
+          <button id="prevBtn">← Prev</button>
+          <button id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+    <div class="result-area">
+      <div id="documentMetadata">
+        <div class="meta-ey">Source Document</div>
+        <div id="metaBookTitle">—</div>
+        <div id="metaPageNum">PAGE —</div>
+      </div>
+      <div id="imageContainer" style="display:none;">
+        <img id="resultImage" src="" alt="Search result page">
+      </div>
+      <div class="r-idle" id="rIdle">
+        <div class="ri-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 19V6a2 2 0 012-2h12a2 2 0 012 2v13" stroke-linecap="round"/>
+            <path d="M4 19h16M9 9h6M9 13h4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ri-title">Begin your search</div>
+        <div class="ri-sub">Explore centuries of history, language, and culture preserved in the national collection.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="aboutModal" class="about-modal">
+  <div class="about-card">
+    <div class="about-inner">
+      <div class="about-header">
+        <div class="about-titles">
+          <div class="about-eyebrow">About this Project</div>
+          <div class="about-title">Digital Heritage,<br>Reimagined</div>
+        </div>
+        <button class="about-close" id="closeAboutBtn"> ✕ </button>
+      </div>
+      <div class="about-divider">
+        <div class="about-div-line"></div><div class="about-div-gem"></div><div class="about-div-gem" style="opacity:0.3;margin:0 4px"></div><div class="about-div-gem"></div><div class="about-div-line r"></div>
+      </div>
+      <div class="about-body">
+        This project was built to <em>empower researchers, scholars, and history enthusiasts</em> exploring the vast collections of the <strong>National Archives of Pakistan</strong>.
+        Traditionally, finding a specific reference in these archives meant spending <em>countless hours manually reading through fragile physical books</em>.
+        We created this digital library to solve that problem — by making these historical texts <em>fully searchable</em>.<br><br>
+        Users can simply <strong>type a word or phrase</strong>, instantly discover which books contain it, and seamlessly read the exact scanned pages where the information is located.
+        Our goal is to <em>bridge the gap between historical preservation and modern technology</em>, making Pakistan's rich history easily accessible to anyone who seeks it.
+      </div>
+      <div class="about-credit">
+        <div class="about-credit-full">
+            <div class="about-credit-seal">N</div>
+            <div class="about-credit-info">
+                <div class="about-credit-role">Research & Development</div>
+                <div class="about-credit-name">TUKL NUST DLL Lab</div>
+            </div>
+        </div>
+        <div class="about-credit-half">
+            <div class="about-credit-seal">A</div>
+            <div class="about-credit-info">
+                <div class="about-credit-role">Supervisor</div>
+                <div class="about-credit-name">Dr. Adnan-ul-Hassan</div>
+            </div>
+        </div>
+        <div class="about-credit-half">
+            <div class="about-credit-seal">U</div>
+            <div class="about-credit-info">
+                <div class="about-credit-role">Developer</div>
+                <div class="about-credit-name">Umar Hayat Ali</div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="readerModal" class="reader-modal">
+  <div class="rm-topbar">
+    <div class="rm-info">
+      <div class="rm-title" id="modalDocTitle">Document Reader</div>
+      <div id="modalCaption">—</div>
+    </div>
+    <button class="rm-close" id="closeModalBtn"> ✕ </button>
+  </div>
+  
+  <div class="rm-body">
+    <button class="rm-nav" id="prevBookPage">
+      <svg viewBox="0 0 17 17"><path d="M10.5 4L6 8.5l4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    
+    <div class="rm-split-container">
+      <div class="rm-left-pane">
+        <img id="modalImage" src="" alt="Full document view">
+        <div id="modalHighlightOverlay" style="position: absolute; inset: 0; pointer-events: none;"></div>
+      </div>
+      
+      <div class="rm-right-pane">
+        <div class="rm-right-toolbar">
+          <button id="btnReadMode" class="active" style="pointer-events: none;">Read Mode</button>
+          <button id="btnCopyText">Copy Text</button>
+          <span id="copyMsg" style="display:none; font-size: 0.7rem; color: var(--emerald); margin-left: 8px;">Copied!</span>
+          
+          <button id="btnSuggestEdit">Suggest Edit</button>
+          <button id="btnCancelEdit" style="display:none;">Cancel</button>
+          <button id="btnSubmitEdit" style="display:none;">Submit Edit</button>
+        </div>
+        
+        <div class="rm-right-content" id="rmRightContent">
+          <div id="rmLoading" style="display:none; font-style: italic; color: var(--ink-4);">Loading digital page...</div>
+          <div id="rmError" style="display:none; color: var(--crimson);"></div>
+          
+          <div id="rmReadContainer"></div>
+          <div id="rmEditContainer" class="rm-edit-container"></div>
+        </div>
+      </div>
+    </div>
+    <button class="rm-nav" id="nextBookPage">
+      <svg viewBox="0 0 17 17"><path d="M6.5 4L11 8.5 6.5 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  
+  <div class="rm-hint">
+    <kbd>←</kbd><kbd>→</kbd> Turn pages &nbsp;·&nbsp; <kbd>Esc</kbd> Close
+  </div>
+</div>
+<div id="adminCredsModal" class="about-modal" style="z-index: 1000;">
+  <div class="about-card" style="max-width:400px">
+    <div class="about-inner">
+      <div class="about-header" style="margin-bottom:1.5rem">
+        <div class="about-titles">
+          <div class="about-title">Update Credentials</div>
+        </div>
+        <button class="about-close" id="closeAdminCredsBtn" aria-label="Close credentials modal"> ✕ </button>
+      </div>
+      <div class="about-divider">
+        <div class="about-div-line"></div><div class="about-div-gem"></div><div class="about-div-line r"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem">
+        <input type="text" id="newAdminUsername" class="admin-input" placeholder="New Username">
+        <input type="password" id="newAdminPassword" class="admin-input" placeholder="New Password">
+        <div id="adminCredsMessage" style="font-size:0.8rem;display:none;"></div>
+      </div>
+      <button id="doUpdateCredsBtn" class="admin-btn">Update</button>
+    </div>
+  </div>
+</div>
+<div id="adminLoginModal" class="about-modal">
+  <div class="about-card" style="max-width:400px">
+    <div class="about-inner">
+      <div class="about-header" style="margin-bottom:1.5rem">
+        <div class="about-titles">
+          <div class="about-title">Admin Access</div>
+        </div>
+        <button class="about-close" id="closeAdminLoginBtn" aria-label="Close login modal"> ✕ </button>
+      </div>
+      <div class="about-divider">
+        <div class="about-div-line"></div><div class="about-div-gem"></div><div class="about-div-line r"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem">
+        <input type="text" id="adminUsername" class="admin-input" placeholder="Username">
+        <input type="password" id="adminPassword" class="admin-input" placeholder="Password" autocomplete="current-password">
+        <div id="adminLoginError" style="color:#ff6b6b;font-size:0.8rem;display:none;"></div>
+      </div>
+      <button id="doLoginBtn" class="admin-btn">Login</button>
+    </div>
+  </div>
+</div>
+<div id="adminPanel" class="about-modal" style="z-index:900;">
+  <div class="about-card" style="max-width:1100px; width: 95vw; height: 90vh; padding:0; display: flex; flex-direction: column;">
+    <button class="about-close" id="closeAdminPanelBtn" style="position:absolute;top:1rem;right:1rem; z-index:100;"> ✕ </button>
+    
+    <!-- ADMIN HEADER & TABS -->
+    <div style="padding: 1.5rem 2rem 0 2rem; border-bottom: 1px solid rgba(200,168,75,0.15);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+            <div>
+                <h2 style="color:var(--gold-2); font-family:'Cinzel',serif; margin-bottom: 0.2rem;">Admin Portal</h2>
+                <p style="color:rgba(255,255,255,0.5); font-size: 0.8rem;">Manage your digital repository and review community contributions.</p>
+            </div>
+            <div>
+                <button id="btnChangeCreds" style="padding:0.4rem 0.8rem; background:transparent; border:1px solid rgba(200,168,75,0.4); color:var(--gold-2); border-radius:4px; cursor:pointer; font-size: 0.7rem; margin-right: 0.5rem;">Change Credentials</button>
+                <button id="tempSignOutBtn" style="padding:0.4rem 0.8rem; background:transparent; border:1px solid rgba(200,168,75,0.4); color:var(--gold-2); border-radius:4px; cursor:pointer; font-size: 0.7rem;">Sign Out</button>
+            </div>
+        </div>
+        
+        <!-- NEW ADMIN TABS -->
+        <div style="display: flex; gap: 1rem;">
+            <button class="admin-main-nav active" id="navReviewEdits">Review Suggested Edits</button>
+            <button class="admin-main-nav" id="navManageCatalog">Manage Catalog (Upload / Delete)</button>
+        </div>
+    </div>
+    
+    <!-- SECTION 1: MANAGE CATALOG (Hidden by default) -->
+    <div id="adminManageSection" style="display: none; flex-direction: column; overflow-y: auto; flex: 1; padding: 1rem 0;">
+        
+        <!-- EXCELLENT PDF UPLOAD SECTION -->
+        <div class="admin-upload-card" style="margin-top: 0;">
+            <div class="up-controls">
+                <div class="up-input-group">
+                    <label class="up-label">Book Title / ID</label>
+                    <input type="text" id="pdfBookId" class="admin-input" placeholder="e.g. Jinnahs_Letters_1947" style="padding: 0.7rem;">
+                </div>
+                <div class="up-input-group up-file-wrap">
+                    <label class="up-label">Select Document</label>
+                    <input type="file" id="pdfFileInput" accept=".pdf" class="admin-input">
+                </div>
+                <div class="up-actions">
+                    <button id="btnUploadPdf" class="admin-btn" style="padding: 0.7rem 1.5rem; width: auto; white-space: nowrap;">Upload & Index</button>
+                    <button id="btnCancelPdf" class="admin-btn btn-cancel" style="padding: 0.7rem 1.5rem; width: auto; display: none;">Cancel</button>
+                </div>
+            </div>
+            
+            <!-- Live Progress Tracker -->
+            <div class="up-tracker" id="pdfTracker">
+                <div class="up-status-text">
+                    <span id="pdfStatusMsg">Initializing...</span>
+                    <span id="pdfStatusPct">0%</span>
+                </div>
+                <div class="up-bar-bg">
+                    <div class="up-bar-fill" id="pdfProgressBar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGE CATALOG: DELETE BOOKS -->
+        <div class="admin-upload-card" style="margin-top: 0; padding: 1rem 2rem;">
+            <div class="up-controls" style="align-items: flex-start;">
+                <div class="up-input-group" style="flex: 2;">
+                    <label class="up-label">Archive Catalog (Select to Delete)</label>
+                    <select id="adminBookList" class="admin-input" multiple style="height: 100px; padding: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+                        <option disabled>Loading catalog...</option>
+                    </select>
+                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-top: 4px;">Hold Ctrl (or Cmd) to select multiple books.</div>
+                </div>
+                <div class="up-actions" style="flex: 1; justify-content: flex-end; height: 100px; padding-bottom: 20px; gap: 0.5rem; display: flex; flex-direction: column;">
+                    <button id="btnDownloadPdf" class="admin-btn" style="padding: 0.7rem 1.5rem; width: 100%; background: var(--gold-2); color: var(--ink-1);">Download Selected</button>
+                    <button id="btnPromptDelete" class="admin-btn btn-cancel" style="padding: 0.7rem 1.5rem; width: 100%;">Delete Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: REVIEW SUGGESTED EDITS (Visible by default) -->
+    <div id="adminReviewSection" class="admin-dashboard" style="padding: 1.5rem 2rem; flex: 1; overflow: hidden; display: flex;">
+        <div class="admin-sidebar">
+            <div class="admin-sidebar-header">Pending Edits Queue</div>
+            <div class="admin-queue" id="adminQueueList">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+        
+        <div class="admin-main">
+            <div class="admin-main-toolbar" id="adminToolbar" style="opacity: 0.5; pointer-events: none;">
+                <button class="admin-tab active" id="tabViewImage">Original Image</button>
+                <button class="admin-tab" id="tabViewOld">Current OCR</button>
+                <button class="admin-tab" id="tabViewNew" style="color: #2e8b57; border-color: rgba(95,221,157,0.4);">Suggested Edit</button>
+                
+                <div class="admin-actions">
+                    <button class="admin-reject" id="btnRejectEdit">Reject</button>
+                    <button class="admin-approve" id="btnApproveEdit">Approve</button>
+                </div>
+            </div>
+            
+            <div class="admin-content-area" id="adminContentArea">
+                <div style="color: var(--ink-5); font-style: italic; margin-top: 2rem;" id="adminPlaceholderText">Select an edit from the queue to review.</div>
+                
+                <img id="adminViewImage" src="" alt="Physical Page">
+                <div id="adminViewOld"></div>
+                <div id="adminViewNew"></div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+    <!-- PASSWORD CONFIRMATION MODAL -->
+    <div id="deleteConfirmModal" class="about-modal" style="z-index: 1100;">
+      <div class="about-card" style="max-width:350px">
+        <div class="about-inner" style="padding: 1.5rem;">
+          <div class="about-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #ff8a8a;">Confirm Deletion</div>
+          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem;">Enter your admin password to permanently delete the selected book(s) and all associated images.</p>
+          <input type="password" id="deleteAdminPassword" class="admin-input" placeholder="Admin Password" style="margin-bottom: 1rem;">
+          <div id="deleteConfirmError" style="color:#ff6b6b;font-size:0.75rem;margin-bottom:1rem;display:none;"></div>
+          <div style="display:flex;gap:0.5rem;">
+            <button id="btnCancelDeleteModal" class="admin-btn" style="background: rgba(255,255,255,0.1); color: white;">Cancel</button>
+            <button id="btnConfirmDelete" class="admin-btn btn-cancel">Permanently Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js?v=1.0.0"></script>
+<!-- CUSTOM ALERT MODAL (BULLETPROOF) -->
+    <div id="customAlertModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: var(--dark-1, #111); border: 1px solid var(--gold-3, #d4af37); border-radius: 8px; max-width: 400px; width: 90%; padding: 2rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 50px rgba(0,0,0,1);">
+            <h3 style="color: var(--gold, #d4af37); font-family: 'Cinzel', serif; margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; letter-spacing: 1px;">Notice</h3>
+            <p id="customAlertMessage" style="color: #e0e0e0; margin-bottom: 2rem; text-align: center; line-height: 1.5; font-family: 'Inter', sans-serif;"></p>
+            <button id="customAlertOkBtn" class="admin-btn" style="padding: 0.6rem 2rem; font-weight: 600; cursor: pointer;">OK</button>
+        </div>
+    </div>
+</body>
+</html>

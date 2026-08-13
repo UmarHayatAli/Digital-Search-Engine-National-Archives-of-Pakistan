@@ -1,0 +1,17 @@
+# Ignore the database so passwords stay safe
+archives.db
+
+# Ignore the heavy images folder 
+Archive_Images/
+
+# Ignore temporary upload files
+tmp_payloads/
+
+# Ignore Python cache files
+__pycache__/
+
+# Ignore backend runtime logs
+logs/
+
+# Ignore Windows executables and zipped backups
+cloudflared.exe
