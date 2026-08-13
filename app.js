@@ -118,26 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function drawHL(imgEl, coords, overlayEl) {
     overlayEl.innerHTML = '';
-    if (!coords || !coords.length) return;
-    
-    // Calculate how much the image is scaled on the user's screen
-    const scaleX = imgEl.clientWidth / imgEl.naturalWidth;
-    const scaleY = imgEl.clientHeight / imgEl.naturalHeight;
-    
-    // Draw a perfectly scaled yellow box for every word match
-    coords.forEach(c => {
-        const div = document.createElement('div');
-        div.style.position = 'absolute';
-        div.style.left = (c.left * scaleX) + 'px';
-        div.style.top = (c.top * scaleY) + 'px';
-        div.style.width = (c.width * scaleX) + 'px';
-        div.style.height = (c.height * scaleY) + 'px';
-        div.style.backgroundColor = 'rgba(200, 168, 75, 0.3)';
-        div.style.border = '1px solid rgba(200, 168, 75, 0.8)';
-        div.style.borderRadius = '2px';
-        div.style.pointerEvents = 'none'; // Lets you click through the box
-        overlayEl.appendChild(div);
-    });
   }
   
   prevBtn.addEventListener('click',()=>{ 
