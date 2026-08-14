@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // FIX: Force Read Mode to identically clone the locked 680px Edit/Admin boxes
         rmReadContainer.style.width = "680px";
         rmReadContainer.style.minWidth = "680px";
-        rmReadContainer.style.whiteSpace = "pre-wrap";
+        rmReadContainer.style.whiteSpace = "normal";
         rmReadContainer.style.fontFamily = "'Inter', sans-serif";
         rmReadContainer.style.fontSize = "1.05rem";
         rmReadContainer.style.lineHeight = "1.7";
@@ -972,14 +972,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Render exactly as the original code did
       adminViewNew.innerHTML = tempDiv.innerHTML; 
       
-  
-      adminViewNew.style.whiteSpace = "pre-wrap"; 
+      // FIX 1: Force Admin Box to become an identical white padded clone of the Edit Box
+      adminViewNew.className = "rm-edit-container";
       
-      adminViewNew.style.fontFamily = "'Inter', sans-serif";
-      adminViewNew.style.fontSize = "1.05rem";
-      adminViewNew.style.lineHeight = "1.7";
-      adminViewNew.style.color = "var(--ink)";
-      adminViewNew.style.textAlign = "left";
+      // Force normal HTML wrapping to perfectly match the Edit Box
+      adminViewNew.style.whiteSpace = "normal";
+      adminViewNew.style.fontFamily = "";
+      adminViewNew.style.fontSize = "";
+      adminViewNew.style.lineHeight = "";
+      adminViewNew.style.color = "";
+      adminViewNew.style.textAlign = "";
       adminViewNew.style.padding = "1.5rem";
       adminViewNew.style.boxSizing = "border-box";
       
