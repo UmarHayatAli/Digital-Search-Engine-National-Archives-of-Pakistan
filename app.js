@@ -967,15 +967,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Render exactly as the original code did
       adminViewNew.innerHTML = tempDiv.innerHTML; 
       
-      // THIS IS THE FIX I FAILED TO GIVE YOU. It forces the browser to 
-      // respect every single space and Enter key you typed.
+  
       adminViewNew.style.whiteSpace = "pre-wrap"; 
       
-      adminViewNew.style.fontFamily = "'Playfair Display', serif";
-      adminViewNew.style.fontSize = "1.1rem";
+      adminViewNew.style.fontFamily = "'Inter', sans-serif";
+      adminViewNew.style.fontSize = "1.05rem";
       adminViewNew.style.lineHeight = "1.7";
-      adminViewNew.style.color = "var(--ink-2)";
+      adminViewNew.style.color = "var(--ink)";
       adminViewNew.style.textAlign = "left";
+      adminViewNew.style.padding = "1.5rem";
+      adminViewNew.style.boxSizing = "border-box";
       
       switchAdminTab('new');
   }
