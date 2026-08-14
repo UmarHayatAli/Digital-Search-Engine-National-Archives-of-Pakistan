@@ -446,10 +446,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentDigitalData) return;
     if (currentDigitalData.length === 1 && currentDigitalData[0].left === 0) {
         rmReadContainer.innerHTML = currentDigitalData[0].word;
-        rmReadContainer.style.fontFamily = "'Playfair Display', serif";
-        rmReadContainer.style.fontSize = "1.1rem";
+        
+        // FIX: Force Read Mode to identically clone the locked 680px Edit/Admin boxes
+        rmReadContainer.style.width = "680px";
+        rmReadContainer.style.minWidth = "680px";
+        rmReadContainer.style.whiteSpace = "pre-wrap";
+        rmReadContainer.style.fontFamily = "'Inter', sans-serif";
+        rmReadContainer.style.fontSize = "1.05rem";
         rmReadContainer.style.lineHeight = "1.7";
-        rmReadContainer.style.color = "var(--ink-2)";
+        rmReadContainer.style.color = "var(--ink)";
+        rmReadContainer.style.textAlign = "left";
     } else {
         const { paragraphs, medH } = parseOCRData(currentDigitalData);
         renderFormattedDocument(rmReadContainer, paragraphs, medH);

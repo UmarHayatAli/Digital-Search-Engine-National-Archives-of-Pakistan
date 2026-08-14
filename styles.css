@@ -35,8 +35,8 @@ body{font-family:'Inter',sans-serif;color:var(--ink)}
 /* Scrollbars */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(200,168,75,0.2);border-radius:99px}
-::-webkit-scrollbar-thumb:hover{background:rgba(200,168,75,0.45)}
+::-webkit-scrollbar-thumb{background:rgba(200,168,75,0.6);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(200,168,75,0.85)}
 
 /* TOPBAR */
 .topbar{
