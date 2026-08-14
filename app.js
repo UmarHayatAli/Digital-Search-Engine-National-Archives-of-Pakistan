@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://cities-cups-brian-quickly.trycloudflare.com";
+const API_BASE_URL = "https://sample-atlantic-aids-indexes.trycloudflare.com";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
 let currentSearchQuery = '';
