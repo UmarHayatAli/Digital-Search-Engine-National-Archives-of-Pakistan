@@ -442,8 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rmReadContainer.style.display = 'block';
     const rmBody = document.querySelector('.rm-body');
     if (rmBody) rmBody.style.alignItems = 'stretch';
-    rmRightContent.style.cssText = 'flex: 1; padding: 2rem; overflow-y: auto; overflow-x: hidden; height: 100%; display: block;';
-    rmReadContainer.style.cssText = 'display: block; width: 100%; max-width: 680px; margin: 0 auto; padding-bottom: 4rem;';
+    rmRightContent.style.cssText = 'flex: 1; padding: 2rem; overflow-y: auto; overflow-x: auto; height: 100%; display: block;';    rmReadContainer.style.cssText = 'display: block; width: 100%; max-width: 680px; margin: 0 auto; padding-bottom: 4rem;';
     if (!currentDigitalData) return;
     if (currentDigitalData.length === 1 && currentDigitalData[0].left === 0) {
         rmReadContainer.innerHTML = currentDigitalData[0].word;
