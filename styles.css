@@ -678,7 +678,7 @@ kbd{
 .admin-reject { background: rgba(220,53,69,0.1); color: #721c24; border: 1px solid rgba(220,53,69,0.3); padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
 .admin-reject:hover { background: rgba(220,53,69,0.2); }
 .admin-content-area {
-    flex: 1; padding: 1.5rem; overflow-y: auto; position: relative; display: flex; justify-content: center;
+    flex: 1; padding: 1.5rem; overflow-y: auto; position: relative; display: flex; justify-content: center; align-items: flex-start;
 }
 #adminViewImage { max-width: 100%; max-height: 100%; object-fit: contain; display: none; border-radius: 4px; }
 #adminViewOld, #adminViewNew { width: 100%; max-width: 680px; display: none; }
