@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://kelkoo-mercury-fragrances-descending.trycloudflare.com";
+const API_BASE_URL = "https://tax-occurs-belkin-tree.trycloudflare.com";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
 let currentSearchQuery = '';
