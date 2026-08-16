@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://tax-occurs-belkin-tree.trycloudflare.com";
+const API_BASE_URL = "https://thereof-rand-publications-must.trycloudflare.com";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
 let currentSearchQuery = '';
@@ -1250,7 +1250,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Start the connection as soon as the page loads
   connectWebSocket();
 
-  // --- STATE RESTORATION ON REFRESH ---
   // --- STATE RESTORATION ON REFRESH ---
   const savedQuery = sessionStorage.getItem('searchQuery');
   const savedPage = sessionStorage.getItem('searchPage');
