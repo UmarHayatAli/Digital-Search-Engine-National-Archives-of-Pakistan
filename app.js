@@ -20,8 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Brute-force it back to hidden
         customAlertModal.style.display = 'none'; 
     });
+
   const searchInput        = document.getElementById('searchInput');
   const searchBtn          = document.getElementById('searchBtn');
+  const searchBookSelect   = document.getElementById('searchBookSelect');
+  const searchPageInput    = document.getElementById('searchPageInput');
   const loadingMsg         = document.getElementById('loadingMsg');
   const resultCounter      = document.getElementById('resultCounter');
   const prevBtn            = document.getElementById('prevBtn');
@@ -40,16 +43,45 @@ document.addEventListener('DOMContentLoaded', () => {
   
   currentImg = leftImage;
   
+  // --- NEW: Populate Book Dropdown on Load ---
+  if (searchBookSelect) {
+      fetch(`${API_BASE_URL}/admin/books`)
+          .then(r => r.json())
+          .then(data => {
+              if (data.books) {
+                  data.books.forEach(b => {
+                      const opt = document.createElement('option');
+                      opt.value = b;
+                      opt.textContent = b.replace(/_/g, ' ');
+                      searchBookSelect.appendChild(opt);
+                  });
+                  // Restore dropdown selection if page was refreshed
+                  const savedBook = sessionStorage.getItem('searchBook');
+                  if (savedBook) searchBookSelect.value = savedBook;
+              }
+          })
+          .catch(e => console.log('Could not load books'));
+  }
+
   searchBtn.addEventListener('click', executeSearch);
   searchInput.addEventListener('keypress', e => { if(e.key==='Enter') executeSearch(); });
-  
+  if(searchPageInput) searchPageInput.addEventListener('keypress', e => { if(e.key==='Enter') executeSearch(); });
+
   function executeSearch(eventOrQuery = null, savedIdx = 0){
     let query = searchInput.value.trim();
     if (typeof eventOrQuery === 'string') query = eventOrQuery;
-    if(!query) return;
+    
+    let bookId = searchBookSelect ? searchBookSelect.value : 'all';
+    let pageNum = searchPageInput ? searchPageInput.value.trim() : '';
 
+    // If both the keyword and the page number are empty, do nothing
+    if(!query && !pageNum) return;
+    
     currentSearchQuery = query; 
     sessionStorage.setItem('searchQuery', query); 
+    sessionStorage.setItem('searchBook', bookId);
+    sessionStorage.setItem('searchPage', pageNum);
+    
     searchBtn.disabled = true;
     loadingMsg.style.display = 'flex';
     emptyState.style.display = 'none';
@@ -64,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
     documentMetadata.style.display = 'none';
     rIdle.style.display = 'none';
     
-    fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`)
+    // NEW: Pass all three parameters to the backend
+    let fetchUrl = `${API_BASE_URL}/search?query=${encodeURIComponent(query)}&book_id=${encodeURIComponent(bookId)}&page=${encodeURIComponent(pageNum)}`;
+    
+    fetch(fetchUrl)
       .then(r=>{ if(!r.ok) throw new Error(); return r.json(); })
       .then(data=>{
         if(data.length===0){
@@ -1216,12 +1251,16 @@ document.addEventListener('DOMContentLoaded', () => {
   connectWebSocket();
 
   // --- STATE RESTORATION ON REFRESH ---
+  // --- STATE RESTORATION ON REFRESH ---
   const savedQuery = sessionStorage.getItem('searchQuery');
+  const savedPage = sessionStorage.getItem('searchPage');
   const savedIdx = parseInt(sessionStorage.getItem('searchPageIdx')) || 0;
-
-  if (savedQuery) {
-      searchInput.value = savedQuery;
-      executeSearch(savedQuery, savedIdx);
+  
+  if (savedPage && searchPageInput) searchPageInput.value = savedPage;
+  
+  if (savedQuery || savedPage) {
+      if (savedQuery) searchInput.value = savedQuery;
+      executeSearch(savedQuery || "", savedIdx);
   }
 
   const adminOpen = sessionStorage.getItem('adminOpen');

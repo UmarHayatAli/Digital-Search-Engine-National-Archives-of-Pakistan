@@ -101,6 +101,15 @@
         <div class="pr-deco-gem"></div>
         <div class="pr-deco-line r"></div>
       </div>
+      
+      <!-- NEW: Book & Page Filters -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <select id="searchBookSelect" style="flex: 3; background: #fff; border: 1.5px solid var(--parch-3); border-radius: var(--r4); padding: 0.6rem 0.8rem; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--ink); outline: none; cursor: pointer; transition: border-color 0.25s;">
+          <option value="all">All Books</option>
+        </select>
+        <input type="number" id="searchPageInput" placeholder="Page #" style="flex: 1; background: #fff; border: 1.5px solid var(--parch-3); border-radius: var(--r4); padding: 0.6rem 0.8rem; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--ink); outline: none; transition: border-color 0.25s;" min="1">
+      </div>
+
       <div class="search-wrap">
         <div class="si-shell">
           <div class="si-ico">

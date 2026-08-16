@@ -562,67 +562,102 @@ reader_rate_limiter = collections.defaultdict(collections.deque)
 reader_rate_limiter_lock = threading.Lock()
 
 @app.get("/search")
-def search_archives(query: str = ""):
-    if not query or not query.strip():
-        return []
-    
-    # Strip FTS5 operators entirely to prevent database syntax crashes
+def search_archives(query: str = "", book_id: str = "all", page: str = ""):
     clean_query = re.sub(r'[*^""\-()]', '', query).strip()
-    if not clean_query:
+    clean_book = book_id.strip()
+    clean_page = page.strip()
+
+    # If absolutely nothing is provided, return empty
+    if not clean_query and not clean_page:
         return []
+
     results = []
     conn = None
-    
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
-        exact_fts_query = f'"{clean_query}"'
-        sql_exact = """
-            SELECT book_id, page_number, word, left, top, width, height 
-            FROM archives 
-            WHERE word MATCH ? 
-            LIMIT 500
-        """
-        cursor.execute(sql_exact, (exact_fts_query,))
-        rows = cursor.fetchall()
-        
-        if not rows and len(clean_query.split()) > 1:
-            terms = clean_query.split()
-            intersect_queries = ["SELECT book_id, page_number FROM archives WHERE word MATCH ?"] * len(terms)
-            intersect_params = [f'"{term}"*' for term in terms]
-            
-            intersect_sql = " INTERSECT ".join(intersect_queries) + " LIMIT 50"
-            cursor.execute(intersect_sql, intersect_params)
-            valid_pages = cursor.fetchall()
-            
-            if valid_pages:
-                page_conditions = ["(book_id = ? AND page_number = ?)"] * len(valid_pages)
-                page_params = []
-                for b_id, p_num in valid_pages:
-                    page_params.extend([b_id, p_num])
-                    
-                page_filter = " OR ".join(page_conditions)
-                or_query = " OR ".join([f'"{term}"*' for term in terms])
-                
-                final_sql = f"""
-                    SELECT book_id, page_number, word, left, top, width, height 
-                    FROM archives 
-                    WHERE word MATCH ? 
-                    AND ({page_filter})
-                    LIMIT 1000
-                """
-                cursor.execute(final_sql, [or_query] + page_params)
-                rows = cursor.fetchall()
 
+        # 1. Build the dynamic filters for Book and Page
+        filters = []
+        filter_params = []
+
+        if clean_book != "all":
+            filters.append("book_id = ?")
+            filter_params.append(clean_book)
+
+        if clean_page:
+            filters.append("page_number = ?")
+            filter_params.append(clean_page)
+
+        filter_sql = (" AND " + " AND ".join(filters)) if filters else ""
+
+        # 2. Execute Query depending on whether there's a keyword
+        if clean_query:
+            # --- EXACT MATCH ATTEMPT ---
+            exact_fts_query = f'"{clean_query}"'
+            sql_exact = f"""
+                SELECT book_id, page_number, word, left, top, width, height 
+                FROM archives 
+                WHERE word MATCH ? {filter_sql}
+                LIMIT 500
+            """
+            cursor.execute(sql_exact, [exact_fts_query] + filter_params)
+            rows = cursor.fetchall()
+
+            # --- FALLBACK: MULTI-WORD INTERSECT ---
+            if not rows and len(clean_query.split()) > 1:
+                terms = clean_query.split()
+                intersect_queries = [f"SELECT book_id, page_number FROM archives WHERE word MATCH ? {filter_sql}"] * len(terms)
+                
+                intersect_params = []
+                for term in terms:
+                    intersect_params.append(f'"{term}"*')
+                    intersect_params.extend(filter_params)
+
+                intersect_sql = " INTERSECT ".join(intersect_queries) + " LIMIT 50"
+                cursor.execute(intersect_sql, intersect_params)
+                valid_pages = cursor.fetchall()
+
+                if valid_pages:
+                    page_conditions = ["(book_id = ? AND page_number = ?)"] * len(valid_pages)
+                    page_params = []
+                    for b_id, p_num in valid_pages:
+                        page_params.extend([b_id, p_num])
+
+                    page_filter = " OR ".join(page_conditions)
+                    or_query = " OR ".join([f'"{term}"*' for term in terms])
+
+                    final_sql = f"""
+                        SELECT book_id, page_number, word, left, top, width, height 
+                        FROM archives 
+                        WHERE word MATCH ? 
+                        AND ({page_filter})
+                        LIMIT 1000
+                    """
+                    cursor.execute(final_sql, [or_query] + page_params)
+                    rows = cursor.fetchall()
+        else:
+            # --- NO KEYWORD, ONLY PAGE NUMBER (AND POSSIBLY BOOK) ---
+            sql_page_only = f"""
+                SELECT book_id, page_number, word, left, top, width, height 
+                FROM archives 
+                WHERE 1=1 {filter_sql}
+                ORDER BY book_id ASC, CAST(page_number AS INTEGER) ASC, top ASC, left ASC
+                LIMIT 1500
+            """
+            cursor.execute(sql_page_only, filter_params)
+            rows = cursor.fetchall()
+
+        # 3. Format Results
         for row in rows:
-            book_id, page_number, word, left, top, width, height = row
-            raw_path = os.path.join(book_id, f"page_{page_number}.jpg")
+            b_id, p_num, word, left, top, width, height = row
+            raw_path = os.path.join(b_id, f"page_{p_num}.jpg")
             normalized_path = raw_path.replace('\\', '/')
-            
+
             results.append({
-                "book_id": book_id,
-                "page_number": str(page_number),
+                "book_id": b_id,
+                "page_number": str(p_num),
                 "word": word,
                 "left": int(left),
                 "top": int(top),
@@ -630,13 +665,13 @@ def search_archives(query: str = ""):
                 "height": int(height),
                 "image_url": f"/images/{normalized_path}"
             })
-            
+
     except Exception as e:
         print(f"Search API Error: {str(e)}")
     finally:
         if conn is not None:
             conn.close()
-            
+
     return results
 
 @app.get("/api/page/{book_id}/{page_num}")
