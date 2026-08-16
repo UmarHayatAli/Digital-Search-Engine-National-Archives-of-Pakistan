@@ -516,7 +516,7 @@ def download_book_pdf(book_id: str, admin: str = Depends(get_current_admin)):
     finally:
         conn.close()
 @app.get("/admin/books")
-def get_all_books(admin: str = Depends(get_current_admin)):
+def get_all_books():
     conn = get_db_connection()
     try:
         cursor = conn.cursor()

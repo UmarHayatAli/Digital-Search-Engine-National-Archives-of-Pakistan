@@ -249,9 +249,13 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('readerUrl', url);
     modalImage.src = url;
     readerModal.classList.add('open');
-    const parts = url.split('/');
+    
+    // FIX: Strip off the "?retry=0" parameter so it doesn't show up in the title!
+    const cleanUrl = url.split('?')[0]; 
+    const parts = cleanUrl.split('/');
     const fn = parts[parts.length-1];
     const bookId = decodeURIComponent(parts[parts.length-2]);
+    
     modalCaption.textContent = decodeURI(fn).replace('.jpg','').replace(/_/g,' ').toUpperCase();
     modalDocTitle.textContent = metaBookTitle.textContent || 'Document Reader';
     loadDigitalPage(bookId, fn);
