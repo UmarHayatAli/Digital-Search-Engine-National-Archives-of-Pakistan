@@ -978,8 +978,26 @@ document.addEventListener('DOMContentLoaded', () => {
           const res = await fetch(`${API_BASE_URL}/api/page/${edit.book_id}/${edit.page_number}`);
           if(res.ok) {
               const oldData = await res.json();
-              const { paragraphs, medH } = parseOCRData(oldData);
-              renderFormattedDocument(adminViewOld, paragraphs, medH, true);
+              
+              // NEW FIX: Check if it is pre-formatted HTML (left === 0)
+              if (oldData && oldData.length === 1 && oldData[0].left === 0) {
+                  adminViewOld.innerHTML = oldData[0].word;
+                  
+                  // Make it look perfectly identical to the Edit box
+                  adminViewOld.className = "rm-edit-container";
+                  adminViewOld.style.whiteSpace = "normal";
+                  adminViewOld.style.fontFamily = "";
+                  adminViewOld.style.fontSize = "";
+                  adminViewOld.style.lineHeight = "";
+                  adminViewOld.style.color = "";
+                  adminViewOld.style.textAlign = "";
+                  adminViewOld.style.padding = "1.5rem";
+                  adminViewOld.style.boxSizing = "border-box";
+              } else {
+                  // OLD BEHAVIOR: If it's raw OCR, parse it normally
+                  const { paragraphs, medH } = parseOCRData(oldData);
+                  renderFormattedDocument(adminViewOld, paragraphs, medH, true);
+              }
           } else {
               adminViewOld.innerHTML = '<div style="color:var(--crimson);">Error fetching current OCR.</div>';
           }
