@@ -75,8 +75,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="admin/login")
 
 def sanitize_book_id(filename: str) -> str:
-    # Only allow letters, numbers, dashes, and underscores. Strips out dangerous dots and slashes.
-    return re.sub(r'[^a-zA-Z0-9_-]', '', filename)
+    # Allow letters, numbers, dashes, underscores, AND spaces.
+    return re.sub(r'[^a-zA-Z0-9_ -]', '', filename)
 # --- Database Helper ---
 def get_db_connection(db_path='archives.db'):
     conn = sqlite3.connect(db_path, timeout=15, check_same_thread=False)
@@ -266,21 +266,30 @@ def _run_pdf_processor(pdf_path: str, book_id: str, status_file: str):
                 except: pass
         
         if was_cancelled:
+            # 1. Clear the Database First (Independent Block)
             try:
-                safe_book_id = sanitize_book_id(book_id)
-                image_dir = os.path.join("Archive_Images", safe_book_id)
-                if os.path.exists(image_dir):
-                    shutil.rmtree(image_dir)
-                
                 conn = sqlite3.connect('archives.db', timeout=15)
                 conn.execute("PRAGMA journal_mode=WAL;")
                 cursor = conn.cursor()
                 cursor.execute("DELETE FROM archives WHERE book_id = ?", (book_id.strip(),))
                 conn.commit()
                 conn.close()
+            except Exception:
+                pass # If DB fails, still try to delete the images
+                
+            # 2. Delete the Images Second (Independent Block with OS Delay)
+            try:
+                import time
+                time.sleep(1.5)  # Give Windows time to release the file locks!
+                
+                # Match exactly how pdf_processor.py creates the folder name
+                image_dir = os.path.join("Archive_Images", book_id.strip())
+                if os.path.exists(image_dir):
+                    import shutil
+                    shutil.rmtree(image_dir)
                 msg = "Processing forcefully cancelled by admin. All files rolled back."
             except Exception as cleanup_err:
-                msg = f"Cancelled, but cleanup failed: {str(cleanup_err)}"
+                msg = f"Cancelled, DB cleared, but image cleanup failed: {str(cleanup_err)}"
                 
         with pdf_lock:
             pdf_status["running"] = False

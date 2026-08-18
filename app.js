@@ -724,6 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function resetUploadUI() {
+      sessionStorage.removeItem('activeUploadTitle'); // NEW: Clears memory when done
       btnUploadPdf.disabled = false;
       btnUploadPdf.textContent = 'Upload & Index';
       btnCancelPdf.style.display = 'none';
@@ -746,6 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('book_id', bookId);
     formData.append('file', file);
     
+    sessionStorage.setItem('activeUploadTitle', bookId); // NEW: Saves title to memory
+
     btnUploadPdf.disabled = true;
     btnUploadPdf.textContent = 'Processing...';
     btnCancelPdf.style.display = 'block';
@@ -784,6 +787,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (res.ok) {
               const data = await res.json();
               if (data.running) {
+                  // NEW: Restore the title from memory and put it in the box
+                  const savedTitle = sessionStorage.getItem('activeUploadTitle');
+                  if (savedTitle) {
+                      pdfBookId.value = savedTitle;
+                  }
+
                   // Re-engage the UI and progress bar
                   btnUploadPdf.disabled = true;
                   btnUploadPdf.textContent = 'Processing...';
