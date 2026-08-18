@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://contribute-tired-carnival-comes.trycloudflare.com";
+const API_BASE_URL = "https://radio-asian-enormous-participate.trycloudflare.com";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
 let currentSearchQuery = '';
