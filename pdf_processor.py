@@ -41,8 +41,8 @@ def rip_pdf_to_images(pdf_path, output_dir, status_file):
     print(f"[PDF Processor] Total pages to rip: {total_pages}")
     
     saved_images = []
-    # High resolution scale factor (2.0 = 144 DPI)
-    zoom = 2.0 
+    # High resolution scale factor (1.6 = 115 DPI)
+    zoom = 1.6 
     mat = fitz.Matrix(zoom, zoom)
 
     for i, page in enumerate(doc):
@@ -146,7 +146,24 @@ def process_pdf(pdf_path, book_id, status_file, db_path="archives.db"):
             conn.commit()
             total_inserted += len(page_batch)
             print(f"  [DB Ingested] Page {page_num}: {len(page_batch)} word entries inserted.")
-
+            # --- NEW: SECURE GPU VRAM FLUSH ---
+        # Destroys large tensors and prevents Out-Of-Memory (OOM) crashes!
+        import gc
+        try:
+            del processed_img
+            del result
+            del page_batch
+        except Exception:
+            pass
+        
+        gc.collect() # Force Python to empty the trash
+        
+        try:
+            import paddle
+            paddle.device.cuda.empty_cache() # Force NVIDIA GPU to release VRAM
+        except Exception:
+            pass
+        # ----------------------------------
     conn.close()
     update_progress(status_file, f"Complete! Indexed {total_inserted} words.", 100)
     print(f"\n[PDF Processor SUCCESS] Book '{safe_book_id}' completely processed! Total rows: {total_inserted}")

@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://docs-density-heroes-tension.trycloudflare.com";
+// const API_BASE_URL = "https://docs-density-heroes-tension.trycloudflare.com";
+const API_BASE_URL = "";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
 let currentSearchQuery = '';
@@ -1176,15 +1177,35 @@ document.addEventListener('DOMContentLoaded', () => {
           if (res.status === 401) return handleSessionExpired();
           if(res.ok) {
               const data = await res.json();
+              
+              // 1. Clear BOTH dropdowns
               adminBookList.innerHTML = '';
+              if (searchBookSelect) {
+                  searchBookSelect.innerHTML = '<option value="all">All Books</option>';
+              }
+
               if(data.books.length === 0) {
                   adminBookList.innerHTML = '<option disabled>No books found in database.</option>';
               } else {
                   data.books.forEach(b => {
+                      // 2. Add to the Admin Panel Dropdown
                       const opt = document.createElement('option');
-                      opt.value = b; opt.textContent = b;
+                      opt.value = b; 
+                      opt.textContent = b;
                       adminBookList.appendChild(opt);
+
+                      // 3. NEW: Add to the Public Search Dropdown at the same time!
+                      if (searchBookSelect) {
+                          const pubOpt = document.createElement('option');
+                          pubOpt.value = b;
+                          pubOpt.textContent = b.replace(/_/g, ' '); // Replaces underscores with spaces for readability
+                          searchBookSelect.appendChild(pubOpt);
+                      }
                   });
+                  
+                  // Restore user's current search selection so it doesn't reset while they are working
+                  const savedBook = sessionStorage.getItem('searchBook');
+                  if (savedBook && searchBookSelect) searchBookSelect.value = savedBook;
               }
           }
       } catch(e) {

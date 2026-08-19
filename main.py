@@ -623,20 +623,32 @@ def search_archives(query: str = "", book_id: str = "all", page: str = ""):
                 for term in terms:
                     intersect_params.append(f'"{term}"*')
                     intersect_params.extend(filter_params)
-
                 intersect_sql = " INTERSECT ".join(intersect_queries) + " LIMIT 50"
                 cursor.execute(intersect_sql, intersect_params)
-                valid_pages = cursor.fetchall()
+                candidate_pages = cursor.fetchall()
+                
+                # --- NEW: PYTHON PROXIMITY FILTER ---
+                # Glues split boxes together and bans randomly scattered words!
+                valid_pages = []
+                clean_search = re.sub(r'[^a-z0-9 ]', '', clean_query.lower())
+                
+                for b_id, p_num in candidate_pages:
+                    cursor.execute("SELECT word FROM archives WHERE book_id = ? AND page_number = ? ORDER BY top ASC, left ASC", (b_id, p_num))
+                    full_page_text = " ".join([r[0] for r in cursor.fetchall()]).lower()
+                    clean_page = re.sub(r'[^a-z0-9 ]', '', full_page_text)
+                    
+                    # Only keep the page if the sentence actually exists intact
+                    if clean_search in clean_page:
+                        valid_pages.append((b_id, p_num))
+                # ------------------------------------
 
                 if valid_pages:
                     page_conditions = ["(book_id = ? AND page_number = ?)"] * len(valid_pages)
                     page_params = []
                     for b_id, p_num in valid_pages:
                         page_params.extend([b_id, p_num])
-
                     page_filter = " OR ".join(page_conditions)
                     or_query = " OR ".join([f'"{term}"*' for term in terms])
-
                     final_sql = f"""
                         SELECT book_id, page_number, word, left, top, width, height 
                         FROM archives 
