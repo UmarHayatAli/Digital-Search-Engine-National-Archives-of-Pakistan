@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://loves-lending-quantitative-endangered.trycloudflare.com";
+const API_BASE_URL = " https://parenting-verification-blah-thee.trycloudflare.com";
 // const API_BASE_URL = "";
 let pageGroups=[], currentIndex=0, currentCoords=[], currentImg=null;
 let currentDigitalData = null;
