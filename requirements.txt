@@ -1,11 +1,27 @@
+# ==========================================
+# Core Web Server & API Framework
+# ==========================================
 fastapi
 uvicorn
 python-multipart
-python-jose[cryptography]
+pydantic
+
+# ==========================================
+# Security & Authentication
+# ==========================================
 passlib[bcrypt]
-xhtml2pdf
+python-jose[cryptography]
+
+# ==========================================
+# AI, Vision & OCR Engine
+# ==========================================
+paddleocr
+paddlepaddle-gpu
 PyMuPDF
 opencv-python
 numpy
-paddlepaddle-gpu
-paddleocr
+
+# ==========================================
+# Document Export & Generation
+# ==========================================
+xhtml2pdf
