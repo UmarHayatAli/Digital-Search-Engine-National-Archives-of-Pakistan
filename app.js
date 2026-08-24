@@ -260,16 +260,17 @@ document.addEventListener('DOMContentLoaded', () => {
     readerModal.classList.add('open');
     
     // 1. Memory Management & Visual Reset
-    modalImage.style.opacity = '0.3'; // Dims to show it's loading
+    modalImage.style.opacity = '0.3'; 
     if (modalImage.src && modalImage.src.startsWith('blob:')) {
-        URL.revokeObjectURL(modalImage.src); // Deletes old image from RAM
+        URL.revokeObjectURL(modalImage.src); 
     }
 
-    // 2. Resilient Image Fetch with Auto-Retry
+    // 2. Resilient Image Fetch with Cache Buster & Auto-Retry
     async function fetchModalImage(targetUrl, attempt = 0) {
         try {
             const res = await fetch(targetUrl, { 
-                headers: { 'ngrok-skip-browser-warning': 'true' } 
+                headers: { 'ngrok-skip-browser-warning': 'true' },
+                cache: 'no-store'  // FIX: Forces a fresh download, stopping the cache bug!
             });
             if (!res.ok) throw new Error("Image fetch failed");
             const blob = await res.blob();
@@ -280,9 +281,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalImage.onload = () => { modalImage.style.opacity = '1'; };
             }
         } catch (err) {
-            // Silently retry up to 3 times if Ngrok drops the connection
-            if (currentReaderUrl === url && attempt < 3) {
-                setTimeout(() => fetchModalImage(targetUrl, attempt + 1), 1000);
+            // Retry logic with explicit visual error handling
+            if (currentReaderUrl === url) {
+                if (attempt < 3) {
+                    setTimeout(() => fetchModalImage(targetUrl, attempt + 1), 1000);
+                } else {
+                    // Wipes the ghost image and forces an error display
+                    modalImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                    modalImage.style.opacity = '1';
+                    if (modalHighlightOverlay) {
+                        modalHighlightOverlay.innerHTML = '<div style="color:#ff6b6b; text-align:center; padding-top:40%; font-size:1.2rem;">Error: Image failed to load</div>';
+                    }
+                }
             }
         }
     }
@@ -1181,7 +1191,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
           const res = await fetch(`${API_BASE_URL}/admin/books/download/${encodeURIComponent(bookId)}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'ngrok-skip-browser-warning': 'true'
+              }
           });
           
           if (res.status === 401) return handleSessionExpired();
