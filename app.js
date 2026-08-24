@@ -46,7 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // --- NEW: Populate Book Dropdown on Load ---
   if (searchBookSelect) {
-      fetch(`${API_BASE_URL}/admin/books`)
+      fetch(`${API_BASE_URL}/admin/books`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+      })
           .then(r => r.json())
           .then(data => {
               if (data.books) {
@@ -100,7 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // NEW: Pass all three parameters to the backend
     let fetchUrl = `${API_BASE_URL}/search?query=${encodeURIComponent(query)}&book_id=${encodeURIComponent(bookId)}&page=${encodeURIComponent(pageNum)}`;
     
-    fetch(fetchUrl)
+    fetch(fetchUrl, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+    })
       .then(r=>{ if(!r.ok) throw new Error(); return r.json(); })
       .then(data=>{
         if(data.length===0){
@@ -380,7 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!match) return showErrorState();
     
     try {
-      const res = await fetch(`${API_BASE_URL}/api/page/${encodeURIComponent(bookId)}/${encodeURIComponent(match[0])}`);
+      const res = await fetch(`${API_BASE_URL}/api/page/${encodeURIComponent(bookId)}/${encodeURIComponent(match[0])}`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
       if(!res.ok) return showErrorState();
       const data = await res.json();
       if (!data || data.length === 0) return showErrorState();
