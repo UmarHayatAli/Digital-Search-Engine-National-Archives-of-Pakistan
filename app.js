@@ -144,14 +144,18 @@ document.addEventListener('DOMContentLoaded', () => {
     leftImageContainer.style.display='block'; plIdle.style.display='none';
     plStatus.textContent=pd[0].page_number.replace('_',' ').toUpperCase(); plStatus.classList.add('on');
     
-    function attemptLoad(attempts) {
-        leftImage.onload = () => drawHL(leftImage, currentCoords, highlightOverlay);
-        leftImage.onerror = () => {
-            // If the server is congested, wait 3 seconds and try again silently
+    async function attemptLoad(attempts) {
+        try {
+            const res = await fetch(targetUrl, { 
+                headers: { 'ngrok-skip-browser-warning': 'true' } 
+            });
+            if (!res.ok) throw new Error();
+            const blob = await res.blob();
+            leftImage.onload = () => drawHL(leftImage, currentCoords, highlightOverlay);
+            leftImage.src = URL.createObjectURL(blob);
+        } catch (e) {
             setTimeout(() => { attemptLoad(attempts + 1); }, 3000);
-        };
-        // Adding "?retry=" forces the browser to actually request it again instead of giving up
-        leftImage.src = targetUrl + "?retry=" + attempts; 
+        }
     }
     attemptLoad(0);
   }
@@ -252,10 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function openModal(url){
     sessionStorage.setItem('readerUrl', url);
-    modalImage.src = url;
+    
+    fetch(url, { headers: { 'ngrok-skip-browser-warning': 'true' } })
+        .then(res => res.blob())
+        .then(blob => { modalImage.src = URL.createObjectURL(blob); });
+        
     readerModal.classList.add('open');
     
-    // FIX: Strip off the "?retry=0" parameter so it doesn't show up in the title!
     const cleanUrl = url.split('?')[0]; 
     const parts = cleanUrl.split('/');
     const fn = parts[parts.length-1];
@@ -265,22 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
     modalDocTitle.textContent = metaBookTitle.textContent || 'Document Reader';
     loadDigitalPage(bookId, fn);
   }
-  
+
   function turnBookPage(dir){
     const rx=/page_(\d+)\.jpg/i, m=currentReaderUrl.match(rx);
     if(!m) return;
     let pg=parseInt(m[1])+dir; if(pg<1) return;
     const nu=currentReaderUrl.replace(rx,`page_${pg}.jpg`);
-    const t = new Image();
-    function attemptTurn(attempts) {
-        t.onload = () => { currentReaderUrl = nu; openModal(nu); };
-        t.onerror = () => {
-            // Keep knocking every 3 seconds until the pipe clears
-            setTimeout(() => { attemptTurn(attempts + 1); }, 3000);
-        };
-        t.src = nu + "?retry=" + attempts;
-    }
-    attemptTurn(0);
+    currentReaderUrl = nu;
+    openModal(nu);
   }
   prevBookPage.addEventListener('click',()=>turnBookPage(-1));
   nextBookPage.addEventListener('click',()=>turnBookPage(1));
@@ -996,7 +995,11 @@ document.addEventListener('DOMContentLoaded', () => {
       adminToolbar.style.pointerEvents = 'auto';
       adminPlaceholderText.style.display = 'none';
       const imgPath = encodeURI(`/images/${edit.book_id}/page_${edit.page_number}.jpg`);
-      adminViewImage.src = `${API_BASE_URL}${imgPath}`;
+      
+      fetch(`${API_BASE_URL}${imgPath}`, { headers: { 'ngrok-skip-browser-warning': 'true' } })
+          .then(res => res.blob())
+          .then(blob => { adminViewImage.src = URL.createObjectURL(blob); });
+          
       adminViewOld.innerHTML = '<div style="font-style:italic;">Loading current text...</div>';
       
       try {
