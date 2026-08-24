@@ -1,3 +1,4 @@
+# This requirements file is used to install all the dependencies for the project in linux OS
 # ==========================================
 # Core Web Server & API Framework
 # ==========================================
@@ -16,10 +17,10 @@ python-jose[cryptography]
 # AI, Vision & OCR Engine
 # ==========================================
 paddleocr
-paddlepaddle-gpu
-PyMuPDF
-opencv-python
+# Replaced standard opencv to prevent libGL.so.1 crashes on Linux
+opencv-python-headless
 numpy
+PyMuPDF
 
 # ==========================================
 # Document Export & Generation
