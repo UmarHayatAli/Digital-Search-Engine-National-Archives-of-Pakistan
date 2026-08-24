@@ -157,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { attemptLoad(attempts + 1); }, 3000);
         }
     }
+    leftImage.dataset.realUrl = targetUrl;
     attemptLoad(0);
   }
   
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   leftImageContainer.addEventListener('click',()=>{
     if(!leftImage.src||leftImageContainer.style.display==='none') return;
-    currentReaderUrl=leftImage.src;
+    currentReaderUrl=leftImage.dataset.realUrl;
     openModal(currentReaderUrl);
   });
   closeModalBtn.addEventListener('click',()=> {
@@ -576,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnSubmitEdit.addEventListener('click', async () => {
     btnSubmitEdit.disabled = true;
     btnSubmitEdit.textContent = "Submitting...";
-    const activeImageUrl = document.getElementById('modalImage').src;
+    const activeImageUrl = currentReaderUrl;
     const pageMatch = activeImageUrl.match(/page_(\d+)/);
     const pageNumStr = pageMatch ? pageMatch[1] : plStatus.textContent.toLowerCase().replace('page ', '').replace('.jpg', '');
     const bookId = metaBookTitle.textContent;
