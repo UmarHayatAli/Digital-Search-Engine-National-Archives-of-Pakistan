@@ -257,13 +257,38 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function openModal(url){
     sessionStorage.setItem('readerUrl', url);
-    
-    fetch(url, { headers: { 'ngrok-skip-browser-warning': 'true' } })
-        .then(res => res.blob())
-        .then(blob => { modalImage.src = URL.createObjectURL(blob); });
-        
     readerModal.classList.add('open');
     
+    // 1. Memory Management & Visual Reset
+    modalImage.style.opacity = '0.3'; // Dims to show it's loading
+    if (modalImage.src && modalImage.src.startsWith('blob:')) {
+        URL.revokeObjectURL(modalImage.src); // Deletes old image from RAM
+    }
+
+    // 2. Resilient Image Fetch with Auto-Retry
+    async function fetchModalImage(targetUrl, attempt = 0) {
+        try {
+            const res = await fetch(targetUrl, { 
+                headers: { 'ngrok-skip-browser-warning': 'true' } 
+            });
+            if (!res.ok) throw new Error("Image fetch failed");
+            const blob = await res.blob();
+            
+            // Race condition guard: Only render if user hasn't clicked Next again
+            if (currentReaderUrl === url) {
+                modalImage.src = URL.createObjectURL(blob);
+                modalImage.onload = () => { modalImage.style.opacity = '1'; };
+            }
+        } catch (err) {
+            // Silently retry up to 3 times if Ngrok drops the connection
+            if (currentReaderUrl === url && attempt < 3) {
+                setTimeout(() => fetchModalImage(targetUrl, attempt + 1), 1000);
+            }
+        }
+    }
+    fetchModalImage(url);
+    
+    // 3. Extract metadata and fetch text
     const cleanUrl = url.split('?')[0]; 
     const parts = cleanUrl.split('/');
     const fn = parts[parts.length-1];
