@@ -1,17 +1,17 @@
-# Ignore the database so passwords stay safe
-archives.db
-
-# Ignore the heavy images folder 
-Archive_Images/
-
-# Ignore temporary upload files
-tmp_payloads/
-
-# Ignore Python cache files
+# Virtual Environments (This stops the 10K file upload)
+venv/
 __pycache__/
 
-# Ignore backend runtime logs
+# Databases & Heavy Media
+archives.db
+Archive_Images/
+PDF BOOKS/
+
+# Temporary & Log Files
+tmp_payloads/
 logs/
 
-# Ignore Windows executables and zipped backups
+# Executables and Downloaded Installers
 cloudflared.exe
+*.deb
+*.tgz
