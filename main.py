@@ -164,7 +164,14 @@ app.add_middleware(
 os.makedirs('Archive_Images', exist_ok=True)
 os.makedirs('logs', exist_ok=True)
 
-app.mount('/images', StaticFiles(directory='Archive_Images'), name='images')
+@app.get("/images/{file_path:path}")
+async def serve_image(file_path: str):
+    target_path = os.path.join("Archive_Images", file_path)
+    if not os.path.exists(target_path):
+        raise HTTPException(status_code=404, detail="Image not found")
+    
+    # Returning it as a FileResponse forces FastAPI to attach all your CORS headers!
+    return FileResponse(target_path)
 
 # --- WebSocket Endpoint ---
 @app.websocket("/ws/updates")
