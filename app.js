@@ -769,7 +769,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch(API_BASE_URL + '/admin/upload-pdf', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'ngrok-skip-browser-warning': 'true'
+        },
         body: formData
       });
       if (res.ok) {
@@ -825,7 +828,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!token) { clearInterval(pdfStatusInterval); return; }
       try {
         const res = await fetch(API_BASE_URL + '/admin/upload-pdf/status', {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 
+              'Authorization': `Bearer ${token}`,
+              'ngrok-skip-browser-warning': 'true'
+          }
         });
         if (res.ok) {
           const statusData = await res.json();
@@ -952,7 +958,10 @@ document.addEventListener('DOMContentLoaded', () => {
       adminQueueList.innerHTML = '<div style="color:white; padding:1rem; font-size:0.8rem;">Loading queue...</div>';
       try {
           const res = await fetch(API_BASE_URL + '/admin/edits/pending', {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'ngrok-skip-browser-warning': 'true'
+              }
           });
           if (res.status === 401) return handleSessionExpired();
           if (!res.ok) throw new Error("Failed to fetch");
@@ -1178,7 +1187,10 @@ document.addEventListener('DOMContentLoaded', () => {
       adminBookList.innerHTML = '<option disabled>Loading catalog...</option>';
       try {
           const res = await fetch(API_BASE_URL + '/admin/books', {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'ngrok-skip-browser-warning': 'true'
+              }
           });
           if (res.status === 401) return handleSessionExpired();
           if(res.ok) {
