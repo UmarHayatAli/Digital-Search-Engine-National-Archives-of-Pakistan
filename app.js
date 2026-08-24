@@ -1000,7 +1000,9 @@ document.addEventListener('DOMContentLoaded', () => {
       adminViewOld.innerHTML = '<div style="font-style:italic;">Loading current text...</div>';
       
       try {
-          const res = await fetch(`${API_BASE_URL}/api/page/${edit.book_id}/${edit.page_number}`);
+          const res = await fetch(`${API_BASE_URL}/api/page/${edit.book_id}/${edit.page_number}`, {
+              headers: { 'ngrok-skip-browser-warning': 'true' }
+          });
           if(res.ok) {
               const oldData = await res.json();
               
