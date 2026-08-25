@@ -75,8 +75,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="admin/login")
 
 def sanitize_book_id(filename: str) -> str:
-    # Allow letters, numbers, dashes, underscores, AND spaces.
-    return re.sub(r'[^a-zA-Z0-9_ -]', '', filename)
+    # Now explicitly allows parentheses to prevent database mismatches
+    return re.sub(r'[^a-zA-Z0-9_ \-\(\)]', '', filename)
 # --- Database Helper ---
 def get_db_connection(db_path='archives.db'):
     conn = sqlite3.connect(db_path, timeout=15, check_same_thread=False)
