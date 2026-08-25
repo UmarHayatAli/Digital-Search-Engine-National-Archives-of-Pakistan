@@ -367,12 +367,11 @@ async def get_pdf_upload_status(response: Response, admin: str = Depends(get_cur
                 current_progress = live_data.get("progress", 0)
         except Exception:
             pass
-            
     return {
         "running": pdf_status.get("running", False),
         "message": current_step,
         "progress": current_progress
-    }
+    }        
 
 class DeleteBooksPayload(BaseModel):
     books: list[str]
