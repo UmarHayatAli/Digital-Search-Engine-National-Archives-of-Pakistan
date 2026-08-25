@@ -827,8 +827,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!token) return;
       try {
           const res = await fetch(API_BASE_URL + '/admin/upload-pdf/status', {
-              headers: { 'Authorization': `Bearer ${token}` }
-          });
+    headers: { 
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true' 
+    }
+});
           if (res.ok) {
               const data = await res.json();
               if (data.running) {
@@ -907,9 +910,12 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfStatusMsg.textContent = "Sending termination signal...";
     try {
       await fetch(API_BASE_URL + '/admin/upload-pdf/cancel', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+  method: 'POST',
+  headers: { 
+      'Authorization': `Bearer ${token}`,
+      'ngrok-skip-browser-warning': 'true'
+  }
+});
     } catch (err) {
       btnCancelPdf.textContent = 'Cancel';
       btnCancelPdf.disabled = false;
