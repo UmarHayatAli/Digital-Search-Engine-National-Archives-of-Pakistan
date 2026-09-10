@@ -791,7 +791,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!token) return;
       try {
           const res = await fetch(API_BASE_URL + '/admin/upload-pdf/status', {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'ngrok-skip-browser-warning': 'true'
+              }
           });
           if (res.ok) {
               const data = await res.json();
@@ -872,7 +875,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await fetch(API_BASE_URL + '/admin/upload-pdf/cancel', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'ngrok-skip-browser-warning': 'true'
+        }
       });
     } catch (err) {
       btnCancelPdf.textContent = 'Cancel';
@@ -1155,7 +1161,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
           const res = await fetch(`${API_BASE_URL}/admin/books/download/${encodeURIComponent(bookId)}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'ngrok-skip-browser-warning': 'true'
+              }
           });
           
           if (res.status === 401) return handleSessionExpired();
